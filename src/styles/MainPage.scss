@@ -1,0 +1,102 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f8f9fa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#main-screen {
+  display: flex;
+  flex-direction: row;
+  min-height: 800px;
+  aside {
+    width: 20%;
+    padding: 1rem;
+    ul {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 0;
+      #main-btn {
+        display: flex;
+        flex-direction: column;
+      }
+      li {
+        padding: 0.5rem;
+        cursor: pointer;
+        &:hover {
+          background-color: #f1f3f5;
+        }
+      }
+      .accordion-btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+    }
+  }
+  .aside-btn {
+    .button {
+      inline-size: 100%;
+      padding: 0.5lh 1.5lh;
+      font: inherit;
+      color: currentColor;
+      background-color: #f28482;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background-color: #f5cac3;
+    }
+
+    .menu {
+      position: relative;
+      display: grid;
+      margin-block-start: 0.5lh;
+      background-color: #f28482;
+
+      overflow: hidden;
+      line-height: 0;
+      color: transparent;
+      transition: line-height 0.5s, color 0.5s;
+    }
+
+    .menu-item {
+      overflow: hidden;
+    }
+
+    .menu-link {
+      display: block;
+      padding: 0.5lh 80px;
+    }
+
+    .menu-link:hover,
+    .menu-link:focus-visible {
+      background-color: #f5cac3;
+    }
+
+    .button.active ~ .menu {
+      line-height: 1.2;
+      color: currentColor;
+    }
+  }
+  main {
+    width: 80%;
+    margin: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,105 @@
+#no-login-page {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    117deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 48%,
+    rgba(0, 131, 236, 1) 48%
+  );
+
+  #login {
+    color: white;
+
+    button {
+      background-color: transparent;
+      color: black;
+      border: 2px solid transparent;
+      padding: 10px 20px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border-radius: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(130, 199, 255, 0.137);
+        color: rgb(207, 214, 255);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.404);
+      }
+    }
+
+    .login-form {
+      opacity: 0; // Начальное состояние невидимости
+      transition: opacity 0.5s ease; // Плавное изменение прозрачности
+      animation: fadeIn 0.5s forwards; // Анимация появления
+
+      input {
+        margin: 10px 0; // Отступы для полей ввода
+        padding: 10px; // Внутренние отступы полей ввода
+        border: 1px solid #ccc; // Граница полей ввода
+        border-radius: 5px; // Скругление углов полей ввода
+      }
+
+      button {
+        padding: 10px 20px; // Отступы кнопки входа
+        font-size: 16px; // Размер шрифта кнопки
+        cursor: pointer; // Курсор при наведении на кнопку
+        border-radius: 10px; // Скругление углов кнопки
+        transition: background-color 0.3s ease; // Плавное изменение фона кнопки
+
+        &:hover {
+          background-color: #007bff; // Синий фон при наведении
+          color: white; // Белый цвет текста при наведении
+        }
+      }
+    }
+    .register-form {
+      opacity: 0; // Начальное состояние невидимости
+      transition: opacity 0.5s ease; // Плавное изменение прозрачности
+      animation: fadeIn 0.5s forwards; // Анимация появления
+
+      input {
+        margin: 10px 0; // Отступы для полей ввода
+        padding: 10px; // Внутренние отступы полей ввода
+        border: 1px solid #ccc; // Граница полей ввода
+        border-radius: 5px; // Скругление углов полей ввода
+      }
+
+      button {
+        padding: 10px 20px; // Отступы кнопки входа
+        font-size: 16px; // Размер шрифта кнопки
+        cursor: pointer; // Курсор при наведении на кнопку
+        border-radius: 10px; // Скругление углов кнопки
+        transition: background-color 0.3s ease; // Плавное изменение фона кнопки
+
+        &:hover {
+          background-color: #007bff; // Синий фон при наведении
+          color: white; // Белый цвет текста при наведении
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0);
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

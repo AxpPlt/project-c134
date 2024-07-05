@@ -1,0 +1,33 @@
+#settings-page {
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1px;
+  }
+  ul {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: start;
+    border-bottom: 1px solid #e9ecef;
+    border-top: 1px solid #e9ecef;
+    li {
+      padding: 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: #f1f3f5;
+      }
+    }
+  }
+  #settings-fields {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    .field {
+      display: flex;
+      padding: 1rem;
+      margin: 1rem;
+      flex-direction: row;
+      border-bottom: 1px solid #e9ecef;
+    }
+  }
+}
