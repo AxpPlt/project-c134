@@ -1,6 +1,7 @@
 {
   "name": "project-c134",
   "version": "0.1.0",
+  "homepage": "https://axpplt.github.io/project-c134",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
