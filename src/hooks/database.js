@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Cookies from "js-cookie";
 class DataBaseDo extends Component {
   // Измененная функция sendData для использования токена из куки
   // async sendData(data, url, isAuthRequest = false) {
@@ -45,12 +46,15 @@ class DataBaseDo extends Component {
   //     console.error("Ошибка:", error);
   //   }
   // }
-  async LoginData(name, password, rememberme) {
-    const itemData = { name, password, rememberme };
+  getTokenFromCookies() {
+    return Cookies.get("jwt");
+  }
+  async LoginData(name, password) {
+    const itemData = { name, password };
     console.log("Отправка данных:", itemData);
     try {
       const response = await fetch(
-        "https://ihor24.pythonanywhere.com/api/login/",
+        "https://ihor24.pythonanywhere.com/api/v1/login/",
         {
           method: "POST",
           headers: {
@@ -61,7 +65,14 @@ class DataBaseDo extends Component {
       );
 
       const result = await response.json();
-      console.log("Результат:", result, "Статус ответа:", response.status); // Обработка результата
+      console.log(
+        "Результат:",
+        result,
+        "Статус ответа:",
+        response.status,
+        "Токен: ",
+        result.token
+      ); // Обработка результата
 
       return { result, status: response.status };
     } catch (error) {
@@ -70,8 +81,13 @@ class DataBaseDo extends Component {
   }
   async getData(url) {
     try {
+      const token = this.getTokenFromCookies();
+      console.log(token);
       const response = await fetch(`${url}`, {
         method: "GET",
+        headers: {
+          Authorization: `${token}`, // Добавление токена в заголовок
+        },
       });
 
       const result = await response.json();

@@ -1,8 +1,12 @@
 import "../styles/SettingsPage.scss";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../components/Modal/Modal";
+import DataBaseDo from "../hooks/database";
+
 const SettingsFields = () => {
+  const DataBaseLogin = new DataBaseDo();
+
   const [modalState, setModalState] = useState({
     isActive: false,
     fieldData: null,
@@ -44,6 +48,13 @@ const SettingsFields = () => {
       types: ["контакт", "объект недвижимости", "*"],
     },
   ]);
+  const handleClickCheck = () => {
+    DataBaseLogin.getData(
+      "https://ihor24.pythonanywhere.com/api/v1/fields/"
+    ).then((result) => {
+      setFields(result);
+    });
+  };
   //   const addFieldType = fieldTypes.map((fieldType) => {
   //     return (
   //       <div className="field-type" key={fieldType.ID}>
@@ -101,7 +112,6 @@ const SettingsFields = () => {
       Extra_Parameters,
       For_structure_type,
     } = modalState.fieldData;
-
     // Преобразование Extra_Parameters в элементы списка
     const renderExtraParameters = (parameters) => {
       return Object.entries(parameters).map(([key, value]) => {
@@ -120,34 +130,34 @@ const SettingsFields = () => {
           }
 
           // Проверяем наличие ключа "For_structure_type" и добавляем соответствующий элемент
-          if (For_structure_type != null) {
-            const AddType = For_structure_type.map((type) => {
-              return (
-                <div key={type}>
-                  {type} <button>Удалить</button>
-                </div>
-              );
-            });
+          // if (For_structure_type != null) {
+          //   const AddType = For_structure_type.map((type) => {
+          //     return (
+          //       <div key={type}>
+          //         {type} <button>Удалить</button>
+          //       </div>
+          //     );
+          //   });
 
-            // Предполагая, что fieldStructureTypes[0] содержит массив типов, например ['type1', 'type2']
-            const fieldStructureOptions = fieldStructureTypes[0].types.map(
-              (type) => {
-                return <option key={type}>{type}</option>;
-              }
-            );
+          //   // Предполагая, что fieldStructureTypes[0] содержит массив типов, например ['type1', 'type2']
+          //   const fieldStructureOptions = fieldStructureTypes[0].types.map(
+          //     (type) => {
+          //       return <option key={type}>{type}</option>;
+          //     }
+          //   );
 
-            elements.push(
-              <div>
-                Для типов структур: Текущий: {AddType}
-                <div>
-                  Добавить:
-                  <select name="" id="">
-                    {fieldStructureOptions}
-                  </select>
-                </div>
-              </div>
-            );
-          }
+          //   elements.push(
+          //     <div>
+          //       Для типов структур: Текущий: {AddType}
+          //       <div>
+          //         Добавить:
+          //         <select name="" id="">
+          //           {fieldStructureOptions}
+          //         </select>
+          //       </div>
+          //     </div>
+          //   );
+          // }
 
           // Возвращаем элементы, обернутые в фрагмент, если массив не пустой
           return elements.length > 0 ? <>{elements}</> : null;
@@ -194,6 +204,9 @@ const SettingsFields = () => {
           Обязательное поле:
           <input type="checkbox" defaultChecked={Must_fill} />
         </div>
+        <div className="for-structure-type">
+          Для шаблонов: {For_structure_type}
+        </div>
         <div className="field-name">
           Дополнительные параметры:
           <ul>{renderExtraParameters(Extra_Parameters)}</ul>
@@ -216,6 +229,13 @@ const SettingsFields = () => {
   return (
     <div id="settings-fields">
       <h1>Настройки полей</h1>
+      <button
+        onClick={() => {
+          handleClickCheck();
+        }}
+      >
+        Проверка
+      </button>
       {addField}
       <Modal
         active={modalState.isActive}
