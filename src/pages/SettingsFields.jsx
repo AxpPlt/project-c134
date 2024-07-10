@@ -11,33 +11,8 @@ const SettingsFields = () => {
     isActive: false,
     fieldData: null,
   });
-  const [fields, setFields] = useState([
-    {
-      Basic_field: true,
-      Extra_Parameters: {
-        For_object_type: ["*"],
-        List_values: ["Квартира", "Дом", "Земля", "Коммерческая недвижимость"],
-      },
-      Field_Name: "Тип объекта",
-      Field_Type: "list",
-      For_structure_type: ["*"],
-      ID: 1,
-      Must_fill: true,
-    },
-    {
-      Basic_field: true,
-      Extra_Parameters: {
-        For_object_type: ["Квартира", "Дом"],
-        data_type: "text",
-        input_type: "field",
-      },
-      Field_Name: "Название объекта",
-      Field_Type: "input",
-      For_structure_type: ["*", "контакт"],
-      ID: 2,
-      Must_fill: true,
-    },
-  ]);
+  const [addModalState, setAddModalState] = useState(false);
+  const [fields, setFields] = useState([]);
   const [fieldTypes, setFieldTypes] = useState([
     {
       types: ["Квартира", "Дом", "Земля", "Коммерческая недвижимость", "*"],
@@ -48,13 +23,14 @@ const SettingsFields = () => {
       types: ["контакт", "объект недвижимости", "*"],
     },
   ]);
-  const handleClickCheck = () => {
+  useEffect(() => {
     DataBaseLogin.getData(
       "https://ihor24.pythonanywhere.com/api/v1/fields/"
     ).then((result) => {
       setFields(result);
+      console.log("Получение данных о полях успешно");
     });
-  };
+  }, []);
   //   const addFieldType = fieldTypes.map((fieldType) => {
   //     return (
   //       <div className="field-type" key={fieldType.ID}>
@@ -66,38 +42,7 @@ const SettingsFields = () => {
   //       </div>
   //     );
   //   });
-  function CheckType(currentName, array) {
-    // Убедимся, что currentTypes всегда является массивом
-    const typesArray = Array.isArray(currentName) ? currentName : [currentName];
-    const allTypes = array[0].types; // Получаем массив всех типов из первого объекта в fieldTypes
 
-    // Фильтруем массив typesArray, оставляя только те значения, которые есть в allTypes
-    const validTypes = typesArray.filter((type) => allTypes.includes(type));
-    const addTypes = array[0].types.map((type) => {
-      return <option key={type}>{type}</option>;
-    });
-    if (validTypes.length >= 0) {
-      const litstTypes = validTypes.map((type) => {
-        return (
-          <div key={type}>
-            {type} <button>Удалить</button>
-          </div>
-        );
-      });
-      return (
-        <div>
-          Текущий: {litstTypes}
-          <div>
-            Добавить:
-            <select name="" id="">
-              {addTypes}
-            </select>
-          </div>
-        </div>
-      );
-    } // Если не найдено ни одного совпадения, возвращаем null
-    return validTypes.length >= 0 ? validTypes : null; // Возвращаем массив с допустимыми типами или null, если таких нет
-  }
   const handleClick = (fieldData) => (e) => {
     e.preventDefault();
     setModalState({ isActive: true, fieldData }); // Установка активного и данных поля
@@ -114,6 +59,40 @@ const SettingsFields = () => {
     } = modalState.fieldData;
     // Преобразование Extra_Parameters в элементы списка
     const renderExtraParameters = (parameters) => {
+      function CheckType(currentName, array) {
+        // Убедимся, что currentTypes всегда является массивом
+        const typesArray = Array.isArray(currentName)
+          ? currentName
+          : [currentName];
+        const allTypes = array[0].types; // Получаем массив всех типов из первого объекта в fieldTypes
+
+        // Фильтруем массив typesArray, оставляя только те значения, которые есть в allTypes
+        const validTypes = typesArray.filter((type) => allTypes.includes(type));
+        const addTypes = array[0].types.map((type) => {
+          return <option key={type}>{type}</option>;
+        });
+        if (validTypes.length >= 0) {
+          const litstTypes = validTypes.map((type) => {
+            return (
+              <div key={type}>
+                {type} <button>Удалить</button>
+              </div>
+            );
+          });
+          return (
+            <div>
+              Текущий: {litstTypes}
+              <div>
+                Добавить:
+                <select name="" id="">
+                  {addTypes}
+                </select>
+              </div>
+            </div>
+          );
+        } // Если не найдено ни одного совпадения, возвращаем null
+        return validTypes.length >= 0 ? validTypes : null; // Возвращаем массив с допустимыми типами или null, если таких нет
+      }
       return Object.entries(parameters).map(([key, value]) => {
         // Проверка на массив
 
@@ -193,7 +172,7 @@ const SettingsFields = () => {
     };
 
     return (
-      <div>
+      <div className="field-modal-container">
         <div className="field-name">
           Название поля:
           <input type="text" placeholder={`${Field_Name}`} />
@@ -215,33 +194,65 @@ const SettingsFields = () => {
       </div>
     );
   };
+  const RenderAddField = () => {
+    return (
+      <div id="modal-add-field">
+        <form action="submit">
+          <label htmlFor="option"> Тип поля: </label>
+          <select name="option" id="option">
+            <option value="">list</option>
+            <option value="">input</option>
+          </select>
+          <label htmlFor="name"> Название поля: </label>
+          <input type="text" name="name" id="name" />
+          <label htmlFor="must-fill"> Обязательное поле: </label>
+          <input type="checkbox" name="must-fill" id="must-fill" />
+          <label htmlFor="data-type"> Тип данных: </label>
+          <select name="data-type" id="data-type">
+            <option value="">Заявки</option>
+            <option value="">Аренда</option>
+            <option value="">Ещё хуйня</option>
+          </select>
+          <p>Дополнительные поля</p>
+          Добавить поле:
+        </form>
+      </div>
+    );
+  };
   const addField = fields.map((field) => {
     return (
       <div className="field" key={field.ID}>
-        <div className="field-name">{field.ID}</div>
+        {/* <div className="field-name">{field.ID}</div> */}
         <div className="field-name">{field.Field_Name}</div>
-        <button onClick={handleClick(field)}>Изменить</button>
-        <button>Удалить</button>
+        <div className="field-btn">
+          <button onClick={handleClick(field)}>Изменить</button>
+          <button>Удалить</button>
+        </div>
       </div>
     );
   });
 
   return (
     <div id="settings-fields">
-      <h1>Настройки полей</h1>
-      <button
-        onClick={() => {
-          handleClickCheck();
-        }}
-      >
-        Проверка
-      </button>
+      <h1>
+        Настройки полей
+        <button
+          onClick={() => {
+            setAddModalState(true);
+          }}
+        >
+          Добавить поле
+        </button>
+      </h1>
       {addField}
       <Modal
         active={modalState.isActive}
         setActive={(isActive) => setModalState({ ...modalState, isActive })}
       >
         {RenderFieldData()}
+      </Modal>
+      <Modal active={addModalState} setActive={() => setAddModalState(false)}>
+        {RenderAddField()}
       </Modal>
     </div>
   );

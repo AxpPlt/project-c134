@@ -82,7 +82,6 @@ class DataBaseDo extends Component {
   async getData(url) {
     try {
       const token = this.getTokenFromCookies();
-      console.log(token);
       const response = await fetch(`${url}`, {
         method: "GET",
         headers: {
@@ -91,7 +90,6 @@ class DataBaseDo extends Component {
       });
 
       const result = await response.json();
-      console.log(result);
       return result;
     } catch (error) {
       console.error("Ошибка:", error);

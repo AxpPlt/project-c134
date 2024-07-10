@@ -95,7 +95,6 @@ const NoLogin = () => {
           </form>
         ) : null}
       </div>
-      <footer>AxpPlt&IhorBehtiev Product. All right reserverd 2024</footer>
     </div>
   );
 };

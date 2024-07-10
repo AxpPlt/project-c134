@@ -18,16 +18,48 @@
       }
     }
   }
+  #modal-add-field {
+    border: 1px solid #e9ecef;
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      select {
+        margin: 1rem;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+      }
+    }
+  }
   #settings-fields {
     display: flex;
     width: 100%;
     flex-direction: column;
+
     .field {
       display: flex;
-      padding: 1rem;
       margin: 1rem;
+      padding: 1rem;
+      width: 60%;
       flex-direction: row;
+      justify-content: space-between;
       border-bottom: 1px solid #e9ecef;
+      .field-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        margin: 2px;
+        padding: 5px;
+        cursor: pointer;
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
     }
   }
 }
