@@ -19,11 +19,29 @@
     }
   }
   #modal-add-field {
-    border: 1px solid #e9ecef;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
     form {
       display: flex;
       flex-direction: column;
-      width: 300px;
+      border: 1px solid #e9ecef;
+
+      display: flex;
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        margin: 1rem;
+        padding: 1rem;
+        cursor: pointer;
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+      width: 100%;
       select {
         margin: 1rem;
         padding: 1rem;

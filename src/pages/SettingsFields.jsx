@@ -212,6 +212,15 @@ const SettingsFields = () => {
       e.preventDefault();
       setInputs([...inputs, { id: inputs.length, value: "" }]);
     };
+    const removeInput = (e) => {
+      e.preventDefault();
+
+      if (inputs.length === 1) {
+        return;
+      } else if (inputs.length > 0) {
+        setInputs(inputs.slice(0, inputs.length - 1));
+      }
+    };
 
     const updateInput = (id, newValue) => {
       const updatedInputs = inputs.map((input) => {
@@ -263,7 +272,7 @@ const SettingsFields = () => {
     };
     return (
       <div id="modal-add-field">
-        <h3>Добавить поле</h3>
+        <p>Добавить поле</p>
         <form onSubmit={handleClick()}>
           <label htmlFor="field-type"> Тип поля: </label>
           <select
@@ -272,8 +281,8 @@ const SettingsFields = () => {
             value={selectedValue}
             onChange={(e) => setSelectedValue(e.target.value)}
           >
-            <option value="list">list</option>
-            <option value="input">input</option>
+            <option value="list">Список</option>
+            <option value="input">Поле значений</option>
           </select>
           <label htmlFor="field-name"> Название поля: </label>
           <input
@@ -283,14 +292,16 @@ const SettingsFields = () => {
             value={fieldName}
             onChange={(e) => setFieldName(e.target.value)}
           />
-          <label htmlFor="must-fill"> Обязательное поле: </label>
-          <input
-            type="checkbox"
-            name="must-fill"
-            id="must-fill"
-            checked={mustFill}
-            onChange={(e) => setMustFill(e.target.checked)}
-          />
+          <div>
+            <label htmlFor="must-fill"> Обязательное поле: </label>
+            <input
+              type="checkbox"
+              name="must-fill"
+              id="must-fill"
+              checked={mustFill}
+              onChange={(e) => setMustFill(e.target.checked)}
+            />
+          </div>
           <label htmlFor="for-structure-type"> Для: </label>
           <select
             name="for-structure-type"
@@ -332,6 +343,7 @@ const SettingsFields = () => {
                   </div>
                 ))}
                 <button onClick={addInput}>Добавить значение</button>
+                <button onClick={removeInput}>Удалить значение</button>
               </div>
             </div>
           ) : selectedValue === "input" ? (

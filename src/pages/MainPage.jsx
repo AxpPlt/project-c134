@@ -8,29 +8,35 @@ const MainPage = () => {
   };
   return (
     <div>
-      <header>CRM</header>
+      <header>
+        <p>CRM</p>
+        <li onClick={handleLogout} className="aside-btn">
+          Выйти
+        </li>
+      </header>
       <div id="main-screen">
         <aside>
           <ul>
             <div id="main-btn">
-              {" "}
               <li className="aside-btn">
-                <Link to="/main">Главная</Link>
+                <Link to="/main">
+                  {" "}
+                  <button type="button">Главная</button>
+                </Link>
               </li>
               <li className="aside-btn">
-                <Link to="/main/settings">Настройки</Link>
+                <Link to="/main/settings">
+                  <button type="button"> Настройки</button>
+                </Link>
               </li>
             </div>
-            <li onClick={handleLogout} className="aside-btn">
-              Выйти
-            </li>
           </ul>
         </aside>
         <main>
           <Outlet />
         </main>
       </div>
-      <footer>Axpplt Producation</footer>
+      <footer>CRM 2024</footer>
     </div>
   );
 };
