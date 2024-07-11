@@ -5,14 +5,14 @@ import Modal from "../components/Modal/Modal";
 import DataBaseDo from "../hooks/database";
 
 const SettingsFields = () => {
-  const DataBaseLogin = new DataBaseDo();
+  const DataBase = new DataBaseDo();
 
   const [modalState, setModalState] = useState({
     isActive: false,
     fieldData: null,
   });
   const [addModalState, setAddModalState] = useState(false);
-  const [fields, setFields] = useState([]);
+  const [fields, setFields] = useState([{ ID: 0, Field_Name: "Загрузка..." }]);
   const [fieldTypes, setFieldTypes] = useState([
     {
       types: ["Квартира", "Дом", "Земля", "Коммерческая недвижимость", "*"],
@@ -24,12 +24,11 @@ const SettingsFields = () => {
     },
   ]);
   useEffect(() => {
-    DataBaseLogin.getData(
-      "https://ihor24.pythonanywhere.com/api/v1/fields/"
-    ).then((result) => {
-      setFields(result);
-      console.log("Получение данных о полях успешно");
-    });
+    DataBase.getData("https://ihor24.pythonanywhere.com/api/v1/fields/").then(
+      (result) => {
+        setFields(result);
+      }
+    );
   }, []);
   //   const addFieldType = fieldTypes.map((fieldType) => {
   //     return (
@@ -46,6 +45,10 @@ const SettingsFields = () => {
   const handleClick = (fieldData) => (e) => {
     e.preventDefault();
     setModalState({ isActive: true, fieldData }); // Установка активного и данных поля
+  };
+  const handleSubmitField = (e, data) => {
+    e.preventDefault();
+    DataBase.sendData(data, "https://ihor24.pythonanywhere.com/api/v1/fields/");
   };
   const RenderFieldData = () => {
     if (!modalState.fieldData) return null;
@@ -195,26 +198,203 @@ const SettingsFields = () => {
     );
   };
   const RenderAddField = () => {
+    const [selectedValue, setSelectedValue] = useState("list");
+    const [inputTypeValue, setInputTypeValue] = useState("text");
+    const [inputs, setInputs] = useState([{ id: 0, value: "" }]);
+    const [fieldName, setFieldName] = useState(""); // Добавлено состояние для названия поля
+    const [mustFill, setMustFill] = useState(false); // Добавлено состояние для обязательного поля
+    const [forStructureType, setForStructureType] = useState(""); // Добавлено состояние для типа структуры
+    const [forObjectType, setForObjectType] = useState(["*"]); // Добавлено состояние для типа объекта
+    const [inputDefaultValue, setInputDefaultValue] = useState(""); // Добавлено состояние для значения по умолчанию
+    const [inputType, setInputType] = useState("field"); // Добавлено состояние для типа поля ввода
+
+    const addInput = (e) => {
+      e.preventDefault();
+      setInputs([...inputs, { id: inputs.length, value: "" }]);
+    };
+
+    const updateInput = (id, newValue) => {
+      const updatedInputs = inputs.map((input) => {
+        if (input.id === id) {
+          return { ...input, value: newValue };
+        }
+        return input;
+      });
+      setInputs(updatedInputs);
+    };
+    const handleClick = (fieldData) => (e) => {
+      e.preventDefault();
+      const createFormData = () => {
+        const formData = {
+          Basic_field: true,
+          Extra_Parameters: {
+            For_object_type: forObjectType,
+          },
+          Field_Name: fieldName,
+          Field_Type: selectedValue,
+          For_structure_type: ["*"],
+          ID: "",
+          Must_fill: mustFill,
+        };
+        if (selectedValue === "input") {
+          formData.Extra_Parameters = {
+            ...formData.Extra_Parameters, // Копируем все текущие параметры
+
+            // Default_value: inputDefaultValue,
+            data_type: inputTypeValue,
+            input_type: inputType,
+          };
+        } else if (selectedValue === "list") {
+          formData.Extra_Parameters = {
+            ...formData.Extra_Parameters, // Копируем все текущие параметры
+            List_values: inputs.map((input) => input.value),
+          };
+        } else {
+          console.error("Неизвестный тип поля");
+        }
+
+        return formData;
+      };
+      const data = createFormData();
+      console.log([data]);
+      DataBase.sendData(
+        [data],
+        "https://ihor24.pythonanywhere.com/api/v1/fields/"
+      );
+    };
     return (
       <div id="modal-add-field">
-        <form action="submit">
-          <label htmlFor="option"> Тип поля: </label>
-          <select name="option" id="option">
-            <option value="">list</option>
-            <option value="">input</option>
+        <h3>Добавить поле</h3>
+        <form onSubmit={handleClick()}>
+          <label htmlFor="field-type"> Тип поля: </label>
+          <select
+            name="field-type"
+            id="field-type"
+            value={selectedValue}
+            onChange={(e) => setSelectedValue(e.target.value)}
+          >
+            <option value="list">list</option>
+            <option value="input">input</option>
           </select>
-          <label htmlFor="name"> Название поля: </label>
-          <input type="text" name="name" id="name" />
+          <label htmlFor="field-name"> Название поля: </label>
+          <input
+            type="text"
+            name="field-name"
+            id="field-name"
+            value={fieldName}
+            onChange={(e) => setFieldName(e.target.value)}
+          />
           <label htmlFor="must-fill"> Обязательное поле: </label>
-          <input type="checkbox" name="must-fill" id="must-fill" />
-          <label htmlFor="data-type"> Тип данных: </label>
-          <select name="data-type" id="data-type">
-            <option value="">Заявки</option>
-            <option value="">Аренда</option>
-            <option value="">Ещё хуйня</option>
+          <input
+            type="checkbox"
+            name="must-fill"
+            id="must-fill"
+            checked={mustFill}
+            onChange={(e) => setMustFill(e.target.checked)}
+          />
+          <label htmlFor="for-structure-type"> Для: </label>
+          <select
+            name="for-structure-type"
+            id="for-structure-type"
+            value={forStructureType}
+            onChange={(e) => setForStructureType(e.target.value)}
+          >
+            <option value="">Всё</option>
+            {/* <option value="">Аренды</option>
+            <option value="">Ещё хуйня</option> */}
           </select>
-          <p>Дополнительные поля</p>
-          Добавить поле:
+          <p>Дополнительные параметры</p>
+
+          {selectedValue === "list" ? (
+            <div id="current-type-list">
+              <div>
+                <p>Для типов объектов:</p>
+                <select
+                  id="for-object-type"
+                  value={forObjectType}
+                  onChange={(e) => setForObjectType(e.target.value)}
+                >
+                  <option>*</option>
+                  <option>Дом</option>
+                  <option>Земля</option>
+                  <option>Коммерческая недвижимость</option>
+                </select>
+              </div>
+              <div>
+                Лист значений:
+                {inputs.map((input) => (
+                  <div key={input.id}>
+                    #{input.id + 1}
+                    <input
+                      type="text"
+                      value={input.value}
+                      onChange={(e) => updateInput(input.id, e.target.value)}
+                    />
+                  </div>
+                ))}
+                <button onClick={addInput}>Добавить значение</button>
+              </div>
+            </div>
+          ) : selectedValue === "input" ? (
+            <div id="current-type-input">
+              <div>
+                <p>Для типов объектов:</p>
+                <select
+                  id="for-object-type"
+                  value={forObjectType}
+                  onChange={(e) => setForObjectType(e.target.value)}
+                >
+                  <option>*</option>
+                  <option>Дом</option>
+                  <option>Земля</option>
+                  <option>Коммерческая недвижимость</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="input-default-value">
+                  Значение по умолчанию:
+                </label>
+                <input
+                  type={inputTypeValue}
+                  id="input-default-value"
+                  value={inputDefaultValue}
+                  onChange={(e) => setInputDefaultValue(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="data_type">Тип данных:</label>
+                <select
+                  value={inputTypeValue}
+                  onChange={(e) => setInputTypeValue(e.target.value)}
+                  name="data_type"
+                  id="data_type"
+                >
+                  <option value="text">Текст</option>
+                  <option value="number">Число</option>
+                  <option value="date">Дата</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="input-type">Тип поля:</label>
+                <select
+                  name="input-type"
+                  id="input-type"
+                  value={inputType}
+                  onChange={(e) => setInputType(e.target.value)}
+                >
+                  <option value="field">стандартное полее ввода</option>
+                  <option value="textarea">
+                    поле ввода изменяемого размера
+                  </option>
+                  <option value="contact_field">
+                    поле для привязки контакта
+                  </option>
+                  <option value="dual_input">шо</option>
+                </select>
+              </div>
+            </div>
+          ) : null}
+          <button type="submit">Добавить поле</button>
         </form>
       </div>
     );

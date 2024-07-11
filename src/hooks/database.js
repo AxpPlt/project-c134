@@ -95,6 +95,29 @@ class DataBaseDo extends Component {
       console.error("Ошибка:", error);
     }
   }
+  async sendData(data, url) {
+    const itemData = data;
+    try {
+      const token = this.getTokenFromCookies();
+      const response = await fetch(`${url}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`, // Добавление токена в заголовок
+        },
+        body: JSON.stringify(itemData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Ошибка при отправке данных");
+      }
+
+      const result = await response.json();
+      console.log(result); // Обработка результата
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  }
 }
 
 export default DataBaseDo;
