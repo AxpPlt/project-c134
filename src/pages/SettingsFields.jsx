@@ -233,7 +233,6 @@ const SettingsFields = () => {
           Field_Name: fieldName,
           Field_Type: selectedValue,
           For_structure_type: ["*"],
-          ID: "",
           Must_fill: mustFill,
         };
         if (selectedValue === "input") {
